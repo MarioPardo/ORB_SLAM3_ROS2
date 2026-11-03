@@ -20,6 +20,7 @@ find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(message_filters REQUIRED)
+find_package(OpenCV REQUIRED)
 find_package(Sophus REQUIRED)
 find_package(Pangolin REQUIRED)
 find_package(ORB_SLAM3 REQUIRED)
@@ -74,6 +75,12 @@ add_executable(stereo-inertial
   src/stereo-inertial/stereo-inertial-node.cpp
 )
 ament_target_dependencies(stereo-inertial rclcpp sensor_msgs cv_bridge ORB_SLAM3 Pangolin)
+
+# The nodes call OpenCV themselves (e.g. cv::initUndistortRectifyMap), so link
+# it explicitly instead of relying on libORB_SLAM3.so's transitive NEEDED libs.
+foreach(tgt mono rgbd stereo stereo-inertial)
+  target_link_libraries(${tgt} ${OpenCV_LIBS})
+endforeach()
 
 install(TARGETS mono rgbd stereo stereo-inertial
   DESTINATION lib/${PROJECT_NAME})
