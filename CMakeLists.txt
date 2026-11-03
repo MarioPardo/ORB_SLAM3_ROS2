@@ -24,6 +24,15 @@ find_package(Sophus REQUIRED)
 find_package(Pangolin REQUIRED)
 find_package(ORB_SLAM3 REQUIRED)
 
+# libORB_SLAM3.so and its DBoW2/g2o deps live in the ORB_SLAM3 source tree, not
+# a system prefix, so the loader cannot find them at runtime without help.
+# Bake their directories into the installed binaries' RPATH.
+set(CMAKE_INSTALL_RPATH
+  "${ORB_SLAM3_ROOT_DIR}/lib"
+  "${ORB_SLAM3_ROOT_DIR}/Thirdparty/DBoW2/lib"
+  "${ORB_SLAM3_ROOT_DIR}/Thirdparty/g2o/lib")
+set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+
 # Sophus is header-only; its config exports no *_INCLUDE_DIRS, only an imported
 # target, so pull the include dir off that target explicitly.
 if(TARGET Sophus::Sophus)
