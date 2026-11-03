@@ -8,7 +8,15 @@
 #include "message_filters/synchronizer.h"
 #include "message_filters/sync_policies/approximate_time.h"
 
-#include <cv_bridge/cv_bridge.h>
+#if defined(__has_include)
+#  if __has_include(<cv_bridge/cv_bridge.hpp>)
+#    include <cv_bridge/cv_bridge.hpp>
+#  else
+#    include <cv_bridge/cv_bridge.h>
+#  endif
+#else
+#  include <cv_bridge/cv_bridge.h>
+#endif
 
 #include "System.h"
 #include "Frame.h"
