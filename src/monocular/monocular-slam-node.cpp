@@ -11,7 +11,10 @@ MonocularSlamNode::MonocularSlamNode(ORB_SLAM3::System* pSLAM)
     // std::cout << "slam changed" << std::endl;
     m_image_subscriber = this->create_subscription<ImageMsg>(
         "camera",
-        10,
+        // The gz->ros bridge publishes images with the SENSOR_DATA profile
+        // (best effort, keep_last 5). A default reliable subscription is
+        // QoS-incompatible with that and silently receives nothing.
+        rclcpp::SensorDataQoS(),
         std::bind(&MonocularSlamNode::GrabImage, this, std::placeholders::_1));
     std::cout << "slam changed" << std::endl;
 }
