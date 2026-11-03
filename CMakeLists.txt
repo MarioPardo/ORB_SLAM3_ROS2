@@ -24,10 +24,17 @@ find_package(Sophus REQUIRED)
 find_package(Pangolin REQUIRED)
 find_package(ORB_SLAM3 REQUIRED)
 
+# Sophus is header-only; its config exports no *_INCLUDE_DIRS, only an imported
+# target, so pull the include dir off that target explicitly.
+if(TARGET Sophus::Sophus)
+  get_target_property(_sophus_includes Sophus::Sophus INTERFACE_INCLUDE_DIRECTORIES)
+endif()
+
 include_directories(
   include
   ${ORB_SLAM3_ROOT_DIR}/include
   ${ORB_SLAM3_ROOT_DIR}/include/CameraModels
+  ${_sophus_includes}
 )
 
 link_directories(
